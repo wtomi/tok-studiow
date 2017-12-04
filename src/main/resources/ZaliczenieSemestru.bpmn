@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.11.2">
   <bpmn:collaboration id="Collaboration_0kiuret">
-    <bpmn:participant id="tok-studiow" name="student" processRef="ZaliczenieSemestru" />
+    <bpmn:participant id="tok-studiow" name="Zaliczenie Semestru" processRef="ZaliczenieSemestru" />
   </bpmn:collaboration>
   <bpmn:process id="ZaliczenieSemestru" isExecutable="true">
     <bpmn:laneSet>
-      <bpmn:lane id="Lane_07rr6hf">
+      <bpmn:lane id="Lane_07rr6hf" name="Student">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>EndEvent_1bfnotx</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_1fg0snu</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_1s70rap</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_1gh5lcl</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_14yagp7">
+      <bpmn:lane id="Lane_14yagp7" name="Dziekanat">
         <bpmn:flowNodeRef>Task_1ifwhb3</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>

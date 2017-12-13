@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/1.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="definitions_1xim5rg" name="definitions" namespace="http://camunda.org/schema/1.0/dmn">
-  <decision id="CzyZaliczyc" name="CzyZaliczyc">
+  <decision id="OcenaPodania" name="OcenaPodania">
     <extensionElements>
       <biodi:bounds x="200" y="200" width="180" height="80" />
     </extensionElements>
@@ -15,7 +15,7 @@
           <text>${podanie_uzasadnienie.length()}</text>
         </inputExpression>
       </input>
-      <output id="output1" label="Czy zaliczono?" name="decyzja_czyZaliczono" typeRef="boolean" />
+      <output id="output1" label="Czy pozytywna?" name="decyzja_czyPozytywna" typeRef="boolean" />
       <output id="OutputClause_11szb1c" label="Uzasadnienie decyzji" name="decyzja_uzasadnienie" typeRef="string" />
       <output id="OutputClause_0aupwyo" label="Czy podjęto decyzję?" name="czyJestDecyzja" typeRef="boolean" />
       <rule id="row-874176976-1">

@@ -41,13 +41,13 @@
       <bpmn:outgoing>SequenceFlow_1hx73ty</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_02asdga" sourceRef="Task_1gh5lcl" targetRef="ExclusiveGateway_1s70rap" camunda:decisionRefBinding="latest" />
-    <bpmn:businessRuleTask id="Task_1gh5lcl" name="OcenaPodania" camunda:decisionRef="CzyZaliczyc">
+    <bpmn:businessRuleTask id="Task_1gh5lcl" name="OcenaPodania" camunda:decisionRef="OcenaPodania">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:outputParameter name="decyzja_uzasadnienie"><![CDATA[${decisionResult.getSingleResult().decyzja_uzasadnienie}
 ]]></camunda:outputParameter>
-          <camunda:outputParameter name="decyzja_czyZaliczono">
-            <camunda:script scriptFormat="groovy"><![CDATA[decisionResult.getSingleResult().getEntry("decyzja_czyZaliczono");]]></camunda:script>
+          <camunda:outputParameter name="decyzja_czyPozytywna">
+            <camunda:script scriptFormat="groovy"><![CDATA[decisionResult.getSingleResult().getEntry("decyzja_czyPozytywna");]]></camunda:script>
           </camunda:outputParameter>
           <camunda:outputParameter name="czyJestDecyzja">
             <camunda:script scriptFormat="groovy"><![CDATA[decisionResult.getSingleResult().getEntry("czyJestDecyzja");]]></camunda:script>
@@ -79,7 +79,7 @@
               <camunda:constraint name="readonly" />
             </camunda:validation>
           </camunda:formField>
-          <camunda:formField id="decyzja_czyZaliczono" label="Czy zaliczono?" type="boolean" />
+          <camunda:formField id="decyzja_czyPozytywna" label="Czy pozytywna?" type="boolean" />
           <camunda:formField id="decyzja_uzasadnienie" label="Uzasadnienie decyzji" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>

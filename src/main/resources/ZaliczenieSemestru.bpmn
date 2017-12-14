@@ -12,7 +12,7 @@
       </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_0cn7vod</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_1s70rap" name="czyZaliczyć?" default="SequenceFlow_0vs3qs7">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1s70rap" name="czyZaliczyćSemestr?" default="SequenceFlow_0vs3qs7">
       <bpmn:incoming>SequenceFlow_0cn7vod</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1hx73ty</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_0vs3qs7</bpmn:outgoing>
@@ -35,13 +35,13 @@
     <bpmn:scriptTask id="Task_0llvuon" name="Decyzja pozytywna" scriptFormat="groovy">
       <bpmn:incoming>SequenceFlow_0vs3qs7</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_18zbp6t</bpmn:outgoing>
-      <bpmn:script><![CDATA[execution.setVariable("decyzja_czyZaliczono", true)
+      <bpmn:script><![CDATA[execution.setVariable("decyzja_czyPozytywna", true)
 execution.setVariable("decyzja_uzasadnienie", "Wystarczająco duźo punktów ECTS")]]></bpmn:script>
     </bpmn:scriptTask>
     <bpmn:scriptTask id="Task_10kkl15" name="Decyzja negatywna" scriptFormat="groovy">
       <bpmn:incoming>SequenceFlow_1hx73ty</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1s58ytg</bpmn:outgoing>
-      <bpmn:script><![CDATA[execution.setVariable("decyzja_czyZaliczono", false)
+      <bpmn:script><![CDATA[execution.setVariable("decyzja_czyPozytywna", false)
 execution.setVariable("decyzja_uzasadnienie", "Za mało punktów ECTS")]]></bpmn:script>
     </bpmn:scriptTask>
     <bpmn:sequenceFlow id="SequenceFlow_0vs3qs7" name="Tak" sourceRef="ExclusiveGateway_1s70rap" targetRef="Task_0llvuon" />

@@ -27,13 +27,13 @@ public class ZaliczenieSemestru  extends ServletProcessApplication{
 	      .putValue("podanie_punktyECTS", 16)
 	      .putValue("podanie_uzasadnienie", "adnsthstrherthjeyj");
 
-	    DmnDecisionTableResult decisionResult = decisionService.evaluateDecisionTableByKey("CzyZaliczyc", variables);
+	    DmnDecisionTableResult decisionResult = decisionService.evaluateDecisionTableByKey("OcenaPodania", variables);
 	    DmnDecisionRuleResult sr = decisionResult.getSingleResult();
 	    
 	   
-	    if (decisionResult.getSingleResult().containsKey("decyzja_czyZaliczono")) {
+	    if (decisionResult.getSingleResult().containsKey("decyzja_czyPozytywna")) {
 	    
-	    	Boolean zal = decisionResult.getSingleResult().getEntry("decyzja_czyZaliczono");
+	    	Boolean zal = decisionResult.getSingleResult().getEntry("decyzja_czyPozytywna");
 	    	System.out.println("Czy zaliczono: " + zal);
 	    }
 	    

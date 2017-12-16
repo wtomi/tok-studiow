@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.11.2">
-  <bpmn:error id="oplataErrID" name="oplata_err" errorCode="oplata_errCode" />
+  <bpmn:error id="oplataErrID" name="OplataError" errorCode="OplataKwotaErrCode" />
   <bpmn:collaboration id="Collaboration_0kiuret">
     <bpmn:participant id="tok-studiow" name="Zaliczenie Semestru" processRef="ZaliczenieSemestru" />
   </bpmn:collaboration>
@@ -11,17 +11,18 @@
         <bpmn:flowNodeRef>EndEvent_1bfnotx</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_1s70rap</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_1gh5lcl</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_1fg0snu</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_1ag1k66</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>OdbiorDecyzji</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>WprowadzenieDanychPlatnosci</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_czyZgoda</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_1lq2b1i</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_14yagp7" name="Dziekanat">
-        <bpmn:flowNodeRef>Task_1ifwhb3</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>DecyzjaDziekanatu</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_czyPozytywna</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>SubProcess_0746fpn</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>BoundaryEvent_1sc08tw</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>BoundaryEvent_0k9x4kr</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>BoundaryEvent_0xw40hf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_0qxnimg</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="StartEvent_1" camunda:formKey="embedded:app:forms/ZlozeniePodania.html" camunda:initiator="inicjator">
@@ -36,8 +37,8 @@
       <bpmn:incoming>SequenceFlow_0frm2u1</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0cn7vod" sourceRef="StartEvent_1" targetRef="Task_1gh5lcl" />
-    <bpmn:sequenceFlow id="SequenceFlow_0frm2u1" sourceRef="Task_1fg0snu" targetRef="EndEvent_1bfnotx" />
-    <bpmn:sequenceFlow id="SequenceFlow_0vs3qs7" name="Tak" sourceRef="ExclusiveGateway_1s70rap" targetRef="Task_1fg0snu" />
+    <bpmn:sequenceFlow id="SequenceFlow_0frm2u1" sourceRef="OdbiorDecyzji" targetRef="EndEvent_1bfnotx" />
+    <bpmn:sequenceFlow id="SequenceFlow_0vs3qs7" name="Tak" sourceRef="ExclusiveGateway_1s70rap" targetRef="OdbiorDecyzji" />
     <bpmn:exclusiveGateway id="ExclusiveGateway_1s70rap" name="czyJestDecyzja?" default="SequenceFlow_0vs3qs7">
       <bpmn:incoming>SequenceFlow_02asdga</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0vs3qs7</bpmn:outgoing>
@@ -60,11 +61,11 @@
       <bpmn:incoming>SequenceFlow_0cn7vod</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_02asdga</bpmn:outgoing>
     </bpmn:businessRuleTask>
-    <bpmn:sequenceFlow id="SequenceFlow_1hx73ty" name="Nie" sourceRef="ExclusiveGateway_1s70rap" targetRef="Task_1ifwhb3">
+    <bpmn:sequenceFlow id="SequenceFlow_1hx73ty" name="Nie" sourceRef="ExclusiveGateway_1s70rap" targetRef="DecyzjaDziekanatu">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!czyJestDecyzja}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_1niouk4" sourceRef="Task_1ifwhb3" targetRef="ExclusiveGateway_czyPozytywna" />
-    <bpmn:userTask id="Task_1ifwhb3" name="Decyzja Dziekanatu" camunda:candidateGroups="dziekanat">
+    <bpmn:sequenceFlow id="SequenceFlow_1niouk4" sourceRef="DecyzjaDziekanatu" targetRef="ExclusiveGateway_czyPozytywna" />
+    <bpmn:userTask id="DecyzjaDziekanatu" name="Decyzja Dziekanatu" camunda:candidateGroups="dziekanat">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="podanie_nrAlbumu" label="Numer albumu" type="string">
@@ -85,12 +86,15 @@
           <camunda:formField id="decyzja_czyPozytywna" label="Czy pozytywna?" type="boolean" />
           <camunda:formField id="decyzja_uzasadnienie" label="Uzasadnienie decyzji" type="string" />
         </camunda:formData>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="oplata_status">rozpoczęta</camunda:outputParameter>
+        </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1hx73ty</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1niouk4</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="SequenceFlow_19l2qwa" name="Tak" sourceRef="ExclusiveGateway_czyPozytywna" targetRef="Task_1ag1k66" />
-    <bpmn:sequenceFlow id="SequenceFlow_0a91tgf" name="Nie" sourceRef="ExclusiveGateway_czyPozytywna" targetRef="Task_1fg0snu">
+    <bpmn:sequenceFlow id="SequenceFlow_19l2qwa" name="Tak" sourceRef="ExclusiveGateway_czyPozytywna" targetRef="WprowadzenieDanychPlatnosci" />
+    <bpmn:sequenceFlow id="SequenceFlow_0a91tgf" name="Nie" sourceRef="ExclusiveGateway_czyPozytywna" targetRef="OdbiorDecyzji">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!decyzja_czyPozytywna}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="ExclusiveGateway_czyPozytywna" name="czy pozytywna decyzja?" default="SequenceFlow_19l2qwa">
@@ -98,25 +102,30 @@
       <bpmn:outgoing>SequenceFlow_19l2qwa</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_0a91tgf</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_0elwncs" sourceRef="Task_1ag1k66" targetRef="ExclusiveGateway_czyZgoda" />
-    <bpmn:userTask id="Task_1fg0snu" name="Odbiór decyzji" camunda:formKey="embedded:app:forms/OdebranieDecyzji.html" camunda:assignee="${inicjator}">
+    <bpmn:sequenceFlow id="SequenceFlow_0elwncs" sourceRef="WprowadzenieDanychPlatnosci" targetRef="ExclusiveGateway_czyZgoda" />
+    <bpmn:userTask id="OdbiorDecyzji" name="Odbiór decyzji" camunda:formKey="embedded:app:forms/OdebranieDecyzji.html" camunda:assignee="${inicjator}">
       <bpmn:incoming>SequenceFlow_0vs3qs7</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0a91tgf</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_01b5ax4</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0xk2qzf</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1edsaw7</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0frm2u1</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Task_1ag1k66" name="Wprowadzenie danych płatności" camunda:assignee="${inicjator}">
+    <bpmn:userTask id="WprowadzenieDanychPlatnosci" name="Wprowadzenie danych płatności" camunda:assignee="${inicjator}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="oplata_nrKonta" label="Numer konta" type="string" />
           <camunda:formField id="oplata_kwota" label="Kwota" type="long" />
           <camunda:formField id="oplata_czyZgoda" label="Czy zgoda?" type="boolean" />
+          <camunda:formField id="oplata_status" label="Status płatności" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_19l2qwa</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_111fw6l</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_17tvfx2</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1kg6501</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0elwncs</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_0rprlv3" name="Tak" sourceRef="ExclusiveGateway_czyZgoda" targetRef="SubProcess_0746fpn" />
@@ -124,62 +133,46 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!oplata_czyZgoda}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:subProcess id="SubProcess_0746fpn">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:outputParameter name="decyzja_uzasadnienie"><![CDATA[${decyzja_uzasadnienie.concat(' Pobrano opłatę, nr transakcji: ')}]]></camunda:outputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0rprlv3</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_004bujb</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_01b5ax4</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1edsaw7</bpmn:outgoing>
       <bpmn:callActivity id="Task_0hrad6z" name="Call Pobranie Opłaty" calledElement="PobranieOplaty">
         <bpmn:extensionElements>
           <camunda:in source="oplata_nrKonta" target="oplata_nrKonta" />
           <camunda:in source="oplata_kwota" target="oplata_kwota" />
           <camunda:out source="oplata_nrTransakcji" target="oplata_nrTransakcji" />
+          <camunda:in source="oplata_nrTransakcji" target="oplata_nrTransakcji" />
         </bpmn:extensionElements>
         <bpmn:incoming>SequenceFlow_0m10fp0</bpmn:incoming>
         <bpmn:outgoing>SequenceFlow_1r8aaid</bpmn:outgoing>
       </bpmn:callActivity>
       <bpmn:endEvent id="EndEvent_0s1p7ot">
-        <bpmn:incoming>SequenceFlow_1r8aaid</bpmn:incoming>
+        <bpmn:incoming>SequenceFlow_0j5o2cn</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:sequenceFlow id="SequenceFlow_1r8aaid" sourceRef="Task_0hrad6z" targetRef="EndEvent_0s1p7ot" />
+      <bpmn:sequenceFlow id="SequenceFlow_1r8aaid" sourceRef="Task_0hrad6z" targetRef="ScriptTask_0y7335i" />
       <bpmn:startEvent id="StartEvent_1rno2p1">
         <bpmn:outgoing>SequenceFlow_0m10fp0</bpmn:outgoing>
       </bpmn:startEvent>
       <bpmn:sequenceFlow id="SequenceFlow_0m10fp0" sourceRef="StartEvent_1rno2p1" targetRef="Task_0hrad6z" />
-      <bpmn:boundaryEvent id="BoundaryEvent_088uqdw" attachedToRef="Task_0hrad6z">
-        <bpmn:outgoing>SequenceFlow_0o57oi2</bpmn:outgoing>
-        <bpmn:errorEventDefinition errorRef="oplataErrID" />
-      </bpmn:boundaryEvent>
-      <bpmn:sequenceFlow id="SequenceFlow_0o57oi2" sourceRef="BoundaryEvent_088uqdw" targetRef="EndEvent_119f7q7" />
-      <bpmn:endEvent id="EndEvent_119f7q7">
-        <bpmn:incoming>SequenceFlow_0o57oi2</bpmn:incoming>
-        <bpmn:errorEventDefinition errorRef="oplataErrID" />
-      </bpmn:endEvent>
+      <bpmn:scriptTask id="ScriptTask_0y7335i" name="Zmiana statusu opłaty (OK)" camunda:resultVariable="oplata_status">
+        <bpmn:incoming>SequenceFlow_1r8aaid</bpmn:incoming>
+        <bpmn:outgoing>SequenceFlow_0j5o2cn</bpmn:outgoing>
+        <bpmn:script>${oplata_nrTransakcji}</bpmn:script>
+      </bpmn:scriptTask>
+      <bpmn:sequenceFlow id="SequenceFlow_0j5o2cn" sourceRef="ScriptTask_0y7335i" targetRef="EndEvent_0s1p7ot" />
     </bpmn:subProcess>
-    <bpmn:sequenceFlow id="SequenceFlow_01b5ax4" sourceRef="SubProcess_0746fpn" targetRef="Task_1fg0snu" />
-    <bpmn:sequenceFlow id="SequenceFlow_111fw6l" sourceRef="BoundaryEvent_1sc08tw" targetRef="Task_1ag1k66" />
-    <bpmn:sequenceFlow id="SequenceFlow_004bujb" sourceRef="BoundaryEvent_1sc08tw" targetRef="SubProcess_0746fpn" />
-    <bpmn:boundaryEvent id="BoundaryEvent_1sc08tw" attachedToRef="SubProcess_0746fpn">
-      <bpmn:outgoing>SequenceFlow_111fw6l</bpmn:outgoing>
-      <bpmn:outgoing>SequenceFlow_004bujb</bpmn:outgoing>
-      <bpmn:errorEventDefinition />
-    </bpmn:boundaryEvent>
-    <bpmn:boundaryEvent id="BoundaryEvent_0k9x4kr" attachedToRef="Task_1ifwhb3">
+    <bpmn:boundaryEvent id="BoundaryEvent_0k9x4kr" attachedToRef="DecyzjaDziekanatu">
       <bpmn:outgoing>SequenceFlow_17tvfx2</bpmn:outgoing>
       <bpmn:timerEventDefinition>
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT3M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_17tvfx2" sourceRef="BoundaryEvent_0k9x4kr" targetRef="Task_1ag1k66" />
+    <bpmn:sequenceFlow id="SequenceFlow_17tvfx2" sourceRef="BoundaryEvent_0k9x4kr" targetRef="WprowadzenieDanychPlatnosci" />
     <bpmn:exclusiveGateway id="ExclusiveGateway_czyZgoda" name="Czy zgoda?&#10;&#10;" default="SequenceFlow_0rprlv3">
       <bpmn:incoming>SequenceFlow_0elwncs</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0rprlv3</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1tgwt48</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_0xk2qzf" sourceRef="Task_1lq2b1i" targetRef="Task_1fg0snu" />
+    <bpmn:sequenceFlow id="SequenceFlow_0xk2qzf" sourceRef="Task_1lq2b1i" targetRef="OdbiorDecyzji" />
     <bpmn:scriptTask id="Task_1lq2b1i" name="Decyzja negatywna" camunda:resultVariable="decyzja_czyPozytywna">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -190,6 +183,18 @@
       <bpmn:outgoing>SequenceFlow_0xk2qzf</bpmn:outgoing>
       <bpmn:script>${false}</bpmn:script>
     </bpmn:scriptTask>
+    <bpmn:boundaryEvent id="BoundaryEvent_0xw40hf" attachedToRef="SubProcess_0746fpn">
+      <bpmn:outgoing>SequenceFlow_1so9ez2</bpmn:outgoing>
+      <bpmn:errorEventDefinition errorRef="oplataErrID" camunda:errorCodeVariable="oplata_errCode" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1so9ez2" sourceRef="BoundaryEvent_0xw40hf" targetRef="Task_0qxnimg" />
+    <bpmn:sequenceFlow id="SequenceFlow_1kg6501" sourceRef="Task_0qxnimg" targetRef="WprowadzenieDanychPlatnosci" />
+    <bpmn:scriptTask id="Task_0qxnimg" name="Zmiana statusu opłaty (error)" camunda:resultVariable="oplata_status">
+      <bpmn:incoming>SequenceFlow_1so9ez2</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1kg6501</bpmn:outgoing>
+      <bpmn:script>${oplata_errCode}</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1edsaw7" sourceRef="SubProcess_0746fpn" targetRef="OdbiorDecyzji" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0kiuret">
@@ -228,7 +233,7 @@
           <dc:Bounds x="928" y="98.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_04emax0_di" bpmnElement="Task_1fg0snu">
+      <bpmndi:BPMNShape id="UserTask_04emax0_di" bpmnElement="OdbiorDecyzji">
         <dc:Bounds x="804" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0vs3qs7_di" bpmnElement="SequenceFlow_0vs3qs7">
@@ -269,7 +274,7 @@
           <dc:Bounds x="444.5" y="450.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_1ef6xj2_di" bpmnElement="Task_1ifwhb3">
+      <bpmndi:BPMNShape id="UserTask_1ef6xj2_di" bpmnElement="DecyzjaDziekanatu">
         <dc:Bounds x="378" y="432" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_1ekijni_di" bpmnElement="ExclusiveGateway_czyPozytywna" isMarkerVisible="true">
@@ -301,7 +306,7 @@
           <dc:Bounds x="681.5" y="281" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_0k0rmhw_di" bpmnElement="Task_1ag1k66">
+      <bpmndi:BPMNShape id="UserTask_0k0rmhw_di" bpmnElement="WprowadzenieDanychPlatnosci">
         <dc:Bounds x="558" y="237" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_0dkzeow_di" bpmnElement="ExclusiveGateway_czyZgoda" isMarkerVisible="true">
@@ -328,82 +333,36 @@
         <dc:Bounds x="759" y="372" width="350" height="268" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="CallActivity_1la5w0w_di" bpmnElement="Task_0hrad6z">
-        <dc:Bounds x="889" y="411" width="100" height="80" />
+        <dc:Bounds x="786" y="527" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_0s1p7ot_di" bpmnElement="EndEvent_0s1p7ot">
-        <dc:Bounds x="1032" y="433" width="36" height="36" />
+        <dc:Bounds x="948" y="403" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1005" y="472" width="90" height="13" />
+          <dc:Bounds x="921" y="442" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1r8aaid_di" bpmnElement="SequenceFlow_1r8aaid">
-        <di:waypoint xsi:type="dc:Point" x="989" y="451" />
-        <di:waypoint xsi:type="dc:Point" x="1032" y="451" />
+        <di:waypoint xsi:type="dc:Point" x="886" y="567" />
+        <di:waypoint xsi:type="dc:Point" x="923" y="567" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="966" y="430" width="90" height="13" />
+          <dc:Bounds x="859.5" y="545.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="StartEvent_1rno2p1_di" bpmnElement="StartEvent_1rno2p1">
-        <dc:Bounds x="800" y="433" width="36" height="36" />
+        <dc:Bounds x="818" y="403" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="773" y="472" width="90" height="13" />
+          <dc:Bounds x="791" y="442" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0m10fp0_di" bpmnElement="SequenceFlow_0m10fp0">
-        <di:waypoint xsi:type="dc:Point" x="836" y="451" />
-        <di:waypoint xsi:type="dc:Point" x="889" y="451" />
+        <di:waypoint xsi:type="dc:Point" x="836" y="439" />
+        <di:waypoint xsi:type="dc:Point" x="836" y="498" />
+        <di:waypoint xsi:type="dc:Point" x="836" y="498" />
+        <di:waypoint xsi:type="dc:Point" x="836" y="527" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="818" y="430" width="90" height="13" />
+          <dc:Bounds x="806" y="491.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_01b5ax4_di" bpmnElement="SequenceFlow_01b5ax4">
-        <di:waypoint xsi:type="dc:Point" x="887" y="372" />
-        <di:waypoint xsi:type="dc:Point" x="887" y="160" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="857" y="259.5" width="90" height="13" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_111fw6l_di" bpmnElement="SequenceFlow_111fw6l">
-        <di:waypoint xsi:type="dc:Point" x="741" y="372" />
-        <di:waypoint xsi:type="dc:Point" x="638" y="372" />
-        <di:waypoint xsi:type="dc:Point" x="638" y="317" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="689.5" y="351" width="0" height="12" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_004bujb_di" bpmnElement="SequenceFlow_004bujb">
-        <di:waypoint xsi:type="dc:Point" x="773" y="383" />
-        <di:waypoint xsi:type="dc:Point" x="765" y="376" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="769" y="358.5" width="0" height="12" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BoundaryEvent_06d5z4u_di" bpmnElement="BoundaryEvent_1sc08tw">
-        <dc:Bounds x="741" y="354" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="759" y="394" width="0" height="12" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BoundaryEvent_0cjv5ox_di" bpmnElement="BoundaryEvent_088uqdw">
-        <dc:Bounds x="871" y="473" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="889" y="512" width="0" height="13" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0o57oi2_di" bpmnElement="SequenceFlow_0o57oi2">
-        <di:waypoint xsi:type="dc:Point" x="889" y="509" />
-        <di:waypoint xsi:type="dc:Point" x="889" y="540" />
-        <di:waypoint xsi:type="dc:Point" x="1032" y="540" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="904" y="518" width="0" height="13" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="EndEvent_1xnlyz6_di" bpmnElement="EndEvent_119f7q7">
-        <dc:Bounds x="1032" y="522" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1049.397" y="561.854" width="0" height="13" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BoundaryEvent_1asvdfv_di" bpmnElement="BoundaryEvent_0k9x4kr">
         <dc:Bounds x="408" y="494" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -413,10 +372,10 @@
       <bpmndi:BPMNEdge id="SequenceFlow_17tvfx2_di" bpmnElement="SequenceFlow_17tvfx2">
         <di:waypoint xsi:type="dc:Point" x="426" y="530" />
         <di:waypoint xsi:type="dc:Point" x="426" y="549" />
-        <di:waypoint xsi:type="dc:Point" x="608" y="549" />
-        <di:waypoint xsi:type="dc:Point" x="608" y="317" />
+        <di:waypoint xsi:type="dc:Point" x="597" y="549" />
+        <di:waypoint xsi:type="dc:Point" x="597" y="318" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="517" y="527.5" width="0" height="13" />
+          <dc:Bounds x="466.5" y="527.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0xk2qzf_di" bpmnElement="SequenceFlow_0xk2qzf">
@@ -429,6 +388,47 @@
       <bpmndi:BPMNShape id="ScriptTask_1i9nfwx_di" bpmnElement="Task_1lq2b1i">
         <dc:Bounds x="751" y="183" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BoundaryEvent_0iwnk74_di" bpmnElement="BoundaryEvent_0xw40hf">
+        <dc:Bounds x="741" y="384" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="759" y="422.5307781649245" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1so9ez2_di" bpmnElement="SequenceFlow_1so9ez2">
+        <di:waypoint xsi:type="dc:Point" x="741" y="402" />
+        <di:waypoint xsi:type="dc:Point" x="723" y="402" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="732" y="380.5" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1kg6501_di" bpmnElement="SequenceFlow_1kg6501">
+        <di:waypoint xsi:type="dc:Point" x="635" y="362" />
+        <di:waypoint xsi:type="dc:Point" x="635" y="317" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="650" y="333" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ScriptTask_05lypkm_di" bpmnElement="Task_0qxnimg">
+        <dc:Bounds x="623" y="362" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_0y7335i_di" bpmnElement="ScriptTask_0y7335i">
+        <dc:Bounds x="923" y="527" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0j5o2cn_di" bpmnElement="SequenceFlow_0j5o2cn">
+        <di:waypoint xsi:type="dc:Point" x="966" y="525" />
+        <di:waypoint xsi:type="dc:Point" x="966" y="442" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="981" y="477" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1edsaw7_di" bpmnElement="SequenceFlow_1edsaw7">
+        <di:waypoint xsi:type="dc:Point" x="883" y="372" />
+        <di:waypoint xsi:type="dc:Point" x="883" y="266" />
+        <di:waypoint xsi:type="dc:Point" x="883" y="161" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="898" y="312.5" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

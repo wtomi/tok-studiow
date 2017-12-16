@@ -19,20 +19,15 @@
       <bpmn:outgoing>SequenceFlow_1gqsvta</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:endEvent id="EndEvent_0ikn0yy">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="oplata_nrTransakcji"><![CDATA[${'ABC321'}]]></camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_00z7vkq</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0c09x9x" name="Tak" sourceRef="ExclusiveGateway_1m5c3dc" targetRef="Task_1ooi9jj" />
-    <bpmn:sequenceFlow id="SequenceFlow_00z7vkq" sourceRef="Task_1ooi9jj" targetRef="EndEvent_0ikn0yy" />
     <bpmn:scriptTask id="Task_1ooi9jj" name="Utworzenie numeru transakcji" camunda:resultVariable="oplata_nrTransakcji">
       <bpmn:incoming>SequenceFlow_0c09x9x</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_00z7vkq</bpmn:outgoing>
       <bpmn:script><![CDATA[${'ABC321'}]]></bpmn:script>
     </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="SequenceFlow_00z7vkq" sourceRef="Task_1ooi9jj" targetRef="EndEvent_0ikn0yy" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PobranieOplaty">
@@ -79,19 +74,19 @@
         <di:waypoint xsi:type="dc:Point" x="371" y="120" />
         <di:waypoint xsi:type="dc:Point" x="450" y="120" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="401.65737051792826" y="99" width="18" height="13" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_00z7vkq_di" bpmnElement="SequenceFlow_00z7vkq">
-        <di:waypoint xsi:type="dc:Point" x="550" y="120" />
-        <di:waypoint xsi:type="dc:Point" x="622" y="120" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="586" y="98.5" width="0" height="13" />
+          <dc:Bounds x="402" y="99" width="18" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ScriptTask_0xsvpt7_di" bpmnElement="Task_1ooi9jj">
         <dc:Bounds x="450" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_00z7vkq_di" bpmnElement="SequenceFlow_00z7vkq">
+        <di:waypoint xsi:type="dc:Point" x="550" y="120" />
+        <di:waypoint xsi:type="dc:Point" x="622" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="541" y="99" width="90" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

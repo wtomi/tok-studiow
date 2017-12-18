@@ -1,4 +1,11 @@
 <form name="ZlozeniePodania">
+  <script cam-script type="text/form-script">
+
+    camForm.on('submit', function() {
+      camForm.businessKey = '123123';
+    });
+
+  </script>
   <div class="form-group">
     <label for="nrAlbumu">Numer albumu</label>
     <input class="form-control"

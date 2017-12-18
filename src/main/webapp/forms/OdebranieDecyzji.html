@@ -1,4 +1,4 @@
-﻿<form name="OdebranieDecyzji">
+<form name="OdebranieDecyzji">
 	<div class="form-group">
 		<label for="nrAlbumu">Numer albumu</label> 
 		<input class="form-control"
@@ -30,6 +30,7 @@
 		<label for="czyPozytywna">Czy pozytywna?</label> 
 		<input
 			class="form-control" 
+			cam-variable-type="Boolean"
 			cam-variable-name="decyzja_czyPozytywna" 
 			name="czyPozytywna"
 			readonly="true" />
@@ -38,6 +39,7 @@
 		<label for="uzasadnienieDecyzji">Uzasadnienie decyzji</label>
 		<input
 			class="form-control" 
+			cam-variable-type="String"
 			cam-variable-name="decyzja_uzasadnienie" 
 			name="uzasadnienieDecyzji"
 			readonly="true" />
@@ -46,8 +48,18 @@
 		<label for="oplataStatus">Status płatności</label>
 		<input
 			class="form-control" 
+			cam-variable-type="String"
 			cam-variable-name="oplata_status" 
 			name="oplataStatus"
 			readonly="true" />
+	</div>	
+	<div class="form-group">
+		<label for="czyOdwolanie">Czy odwołanie?</label>
+		<input
+			class="form-control" 
+			cam-variable-type="Boolean"
+			cam-variable-name="czyOdwolanie" 
+			name="czyOdwolanie"
+			 />
 	</div>	
 </form>

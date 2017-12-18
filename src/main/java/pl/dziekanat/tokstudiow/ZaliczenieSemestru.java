@@ -19,7 +19,7 @@ import org.camunda.bpm.engine.variable.value.TypedValue;
 @ProcessApplication("Zaliczenie semestru")
 public class ZaliczenieSemestru  extends ServletProcessApplication{
 	  @PostDeploy
-	  public void evaluateDecisionTable(ProcessEngine processEngine) { //do testowanie regu≥
+	  public void evaluateDecisionTable(ProcessEngine processEngine) { //do testowanie regu≈Ç
 
 	    DecisionService decisionService = processEngine.getDecisionService();
 

@@ -56,9 +56,6 @@ public class PobranieOplatyTest {
 	    	  .putValue("podanie_nrAlbumu", "29000")
 	    	  .putValue("podanie_punktyECTS", 15)
 	    	  .putValue("podanie_uzasadnienie", "kro'tkie")	    	  
-	    	  .putValue("czyJestDecyzja", false)
-	  	      .putValue("oplata_status", "rozpoczeta")
-	  	      
 	  	      ;
 	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ZaliczenieSemestru", variablesIn);
 	    

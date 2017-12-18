@@ -9,7 +9,11 @@ public class OdwolanieCallback implements JavaDelegate {
 
 	public void execute(DelegateExecution execution) throws Exception {
 		RuntimeService runtimeService = execution.getProcessEngineServices().getRuntimeService();
-		runtimeService.startProcessInstanceByMessage("wynikodwolaniaMsg");
+		runtimeService.createMessageCorrelation("wynikodwolaniaMsg")
+		  .processInstanceBusinessKey(execution.getVariable("parentBussinesKey").toString())
+		  .setVariable("decyzja_czyPozytywna", execution.getVariable("decyzja_czyPozytywna"))
+		  .setVariable("decyzja_uzasadnienie", execution.getVariable("decyzja_uzasadnienie"))
+		  .correlateWithResult();
 		
 	}
 

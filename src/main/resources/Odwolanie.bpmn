@@ -9,17 +9,22 @@
     </bpmn:startEvent>
     <bpmn:endEvent id="EndOdwolanieId">
       <bpmn:incoming>SequenceFlow_join_end</bpmn:incoming>
-      <bpmn:messageEventDefinition messageRef="wynikodwolaniaMsgId" camunda:class="pl.dziekanat.tokstudiow." />
+      <bpmn:messageEventDefinition messageRef="wynikodwolaniaMsgId" camunda:class="pl.dziekanat.tokstudiow.OdwolanieCallback" />
     </bpmn:endEvent>
     <bpmn:parallelGateway id="ForkGateway">
-      <bpmn:incoming>SequenceFlow_1qgr6ub</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_start_fork</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_fork_rektor</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_fork_dziekan</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_start_fork" sourceRef="StartOdwolanieId" targetRef="breakpoint" />
+    <bpmn:sequenceFlow id="SequenceFlow_start_fork" sourceRef="StartOdwolanieId" targetRef="ForkGateway" />
     <bpmn:sequenceFlow id="SequenceFlow_join_end" sourceRef="JoinGateway" targetRef="EndOdwolanieId" />
     <bpmn:sequenceFlow id="SequenceFlow_fork_rektor" sourceRef="ForkGateway" targetRef="IntermediateThrowEvent_0317j2t" />
     <bpmn:scriptTask id="Task_1joeqw6" name="Pozytywna decyzja Rektora&#10;&#10;" camunda:resultVariable="decyzja_czyPozytywna">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="decyzja_uzasadnienie"><![CDATA[${'Pozytywna decyzja Rektora.'}]]></camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_rektor_decyzja</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_decyzjaRektora_join</bpmn:outgoing>
       <bpmn:script>${true}</bpmn:script>
@@ -33,7 +38,12 @@
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT3S</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
-    <bpmn:scriptTask id="Task_0p5t1at" name="Negatywna decyzja Dziekana">
+    <bpmn:scriptTask id="Task_0p5t1at" name="Negatywna decyzja Dziekana" camunda:resultVariable="decyzja_czyPozytywna">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="decyzja_uzasadnienie"><![CDATA[${'Decyzja negatywna podtrzymana przez Dziekana.'}]]></camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_dziekan_decyzja</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_decyzjaDziekana_join</bpmn:outgoing>
       <bpmn:script>${false}</bpmn:script>
@@ -49,22 +59,17 @@
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:parallelGateway id="JoinGateway">
-      <bpmn:incoming>SequenceFlow_decyzjaRektora_join</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_decyzjaDziekana_join</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_decyzjaRektora_join</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_join_end</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_1qgr6ub" sourceRef="breakpoint" targetRef="ForkGateway" />
-    <bpmn:userTask id="breakpoint" name="breakpoint">
-      <bpmn:incoming>SequenceFlow_start_fork</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1qgr6ub</bpmn:outgoing>
-    </bpmn:userTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Odwolanie">
       <bpmndi:BPMNShape id="StartEvent_1l4tcgv_di" bpmnElement="StartOdwolanieId">
-        <dc:Bounds x="91" y="102" width="36" height="36" />
+        <dc:Bounds x="37" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="19" y="138" width="90" height="13" />
+          <dc:Bounds x="-35" y="138" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_0tbwqbd_di" bpmnElement="EndOdwolanieId">
@@ -80,17 +85,17 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0109uds_di" bpmnElement="SequenceFlow_start_fork">
-        <di:waypoint xsi:type="dc:Point" x="127" y="120" />
-        <di:waypoint xsi:type="dc:Point" x="142" y="120" />
+        <di:waypoint xsi:type="dc:Point" x="73" y="120" />
+        <di:waypoint xsi:type="dc:Point" x="257" y="120" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="89.5" y="98.5" width="90" height="13" />
+          <dc:Bounds x="120" y="98.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_00qmyn3_di" bpmnElement="SequenceFlow_join_end">
         <di:waypoint xsi:type="dc:Point" x="705" y="120" />
         <di:waypoint xsi:type="dc:Point" x="752" y="120" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="683.5" y="98.5" width="90" height="13" />
+          <dc:Bounds x="684" y="99" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1tbg05j_di" bpmnElement="SequenceFlow_fork_rektor">
@@ -116,7 +121,7 @@
         <di:waypoint xsi:type="dc:Point" x="680" y="31" />
         <di:waypoint xsi:type="dc:Point" x="680" y="95" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="588" y="9.5" width="90" height="13" />
+          <dc:Bounds x="588" y="10" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_0nvwktz_di" bpmnElement="IntermediateThrowEvent_13l7pvc">
@@ -150,7 +155,7 @@
         <di:waypoint xsi:type="dc:Point" x="680" y="193" />
         <di:waypoint xsi:type="dc:Point" x="680" y="145" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="588" y="171.5" width="90" height="13" />
+          <dc:Bounds x="588" y="172" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_03ikcoo_di" bpmnElement="IntermediateThrowEvent_0317j2t">
@@ -162,18 +167,8 @@
       <bpmndi:BPMNShape id="ParallelGateway_0mp849x_di" bpmnElement="JoinGateway">
         <dc:Bounds x="655" y="95" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="635" y="148" width="0" height="13" />
+          <dc:Bounds x="590" y="148" width="90" height="13" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_1qgr6ub_di" bpmnElement="SequenceFlow_1qgr6ub">
-        <di:waypoint xsi:type="dc:Point" x="242" y="120" />
-        <di:waypoint xsi:type="dc:Point" x="257" y="120" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="249.5" y="98.5" width="0" height="13" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_1923sga_di" bpmnElement="breakpoint">
-        <dc:Bounds x="142" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

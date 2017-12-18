@@ -1,14 +1,18 @@
 package pl.dziekanat.tokstudiow;
 
+import static org.camunda.bpm.engine.test.assertions.ProcessEngineAssertions.assertThat;
+import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.complete;
+import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.task;
+import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.withVariables;
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
+import org.camunda.bpm.engine.HistoryService;
+import org.camunda.bpm.engine.ProcessEngineConfiguration;
 import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.history.HistoricVariableInstance;
-import org.camunda.bpm.engine.history.HistoricVariableInstanceQuery;
-import org.camunda.bpm.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.engine.test.RequiredHistoryLevel;
@@ -16,13 +20,6 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.Rule;
 import org.junit.Test;
-import org.camunda.bpm.engine.HistoryService;
-import org.camunda.bpm.engine.ProcessEngineConfiguration;
-
-import static org.junit.Assert.assertEquals;
-import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.*;
-
-import java.util.List;
 
 @RequiredHistoryLevel(ProcessEngineConfiguration.HISTORY_AUDIT)
 public class PobranieOplatyTest {
@@ -50,16 +47,14 @@ public class PobranieOplatyTest {
 
 	  @Test
 	  @Deployment(resources = {"PobranieOplaty.bpmn", "OcenaPodania.dmn", "ZaliczenieSemestru.bpmn"})
-	  public void testZaliczenieSemestru() {
+	  public void testZaliczenieSemestru() throws InterruptedException {
 	    RuntimeService runtimeService = processEngineRule.getRuntimeService();
 	    VariableMap variablesIn = Variables.createVariables()
 	    	  .putValue("podanie_nrAlbumu", "29000")
 	    	  .putValue("podanie_punktyECTS", 15)
-	    	  .putValue("podanie_uzasadnienie", "kro'tkie")	    	  
-	    	  .putValue("czyJestDecyzja", false)
-	  	      .putValue("oplata_status", "rozpoczeta")
-	  	      
+	    	  .putValue("podanie_uzasadnienie", "kro'tkie")	    	       
 	  	      ;
+	    
 	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ZaliczenieSemestru", variablesIn);
 	    
 	    assertThat(processInstance).isWaitingAt("DecyzjaDziekanatu");
@@ -77,7 +72,37 @@ public class PobranieOplatyTest {
 	    assertThat(processInstance).variables().containsEntry("oplata_kwota", 100);
 	    assertThat(processInstance).variables().containsEntry("oplata_nrTransakcji", "ABC321");
 	    assertThat(processInstance).variables().containsEntry("oplata_status", "ABC321");
-	    complete(task(processInstance));
+	    complete(task(processInstance), withVariables("czyOdwolanie", false));
+	    
+	    assertThat(processInstance).isEnded();
+	    
+	    
+	  }	  
+	  
+	  
+//	  @Test //tutaj potrzebny jest test integracyjny za pomocą Arquillian
+	  @Deployment(resources = {"OcenaPodania.dmn", "ZaliczenieSemestru.bpmn", "Odwolanie.bpmn"})
+	  public void testZaliczenieSemestruZodwolaniem() throws InterruptedException {
+	    RuntimeService runtimeService = processEngineRule.getRuntimeService();
+	    VariableMap variablesIn = Variables.createVariables()
+	    	  .putValue("podanie_nrAlbumu", "29001")
+	    	  .putValue("podanie_punktyECTS", 5)
+	    	  .putValue("podanie_uzasadnienie", "kro'tkie")	    	   	      
+	  	      ;
+	    
+	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ZaliczenieSemestru", 
+	    		"UnikalnyIdentyfikatorInstacjiProcesu-businessKey", variablesIn);	       
+	    
+	    assertThat(processInstance).isWaitingAt("OdbiorDecyzji");
+	    assertThat(processInstance).variables().containsEntry("decyzja_czyPozytywna", false);
+	    complete(task(processInstance), withVariables("czyOdwolanie", true));
+	    
+	    assertThat(processInstance).isWaitingAt("OdebranieOdwolania");
+	    Thread.sleep(1000*5);
+	    
+	    assertThat(processInstance).isNotWaitingAt("OdebranieOdwolania");
+	    assertThat(processInstance).isWaitingAt("OdbiorDecyzji");
+	    complete(task(processInstance), withVariables("czyOdwolanie", false));
 	    
 	    assertThat(processInstance).isEnded();
 	    

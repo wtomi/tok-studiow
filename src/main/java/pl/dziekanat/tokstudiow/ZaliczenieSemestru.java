@@ -24,8 +24,8 @@ public class ZaliczenieSemestru  extends ServletProcessApplication{
 	    DecisionService decisionService = processEngine.getDecisionService();
 
 	    VariableMap variables = Variables.createVariables()
-	      .putValue("podanie_punktyECTS", 16)
-	      .putValue("podanie_uzasadnienie", "adnsthstrherthjeyj");
+	      .putValue("podanie_srednia", 4.0)
+	      .putValue("dodatkowe_dokumenty", false);
 
 	    DmnDecisionTableResult decisionResult = decisionService.evaluateDecisionTableByKey("OcenaPodania", variables);
 	    DmnDecisionRuleResult sr = decisionResult.getSingleResult();

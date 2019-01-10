@@ -5,9 +5,9 @@
       <biodi:bounds x="200" y="200" width="180" height="80" />
     </extensionElements>
     <decisionTable id="decisionTable">
-      <input id="input1" label="Srednia" camunda:inputVariable="srednia">
+      <input id="input1" label="Srednia" camunda:inputVariable="podanie_srednia">
         <inputExpression id="inputExpression1" typeRef="double">
-          <text>srednia</text>
+          <text>podanie_srednia</text>
         </inputExpression>
       </input>
       <input id="InputClause_0hknosw" label="Dodatkowe dokumenty" camunda:inputVariable="dodatkowe_dokumenty">
@@ -62,7 +62,7 @@
           <text>false</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1jm9oa9">
-          <text>true</text>
+          <text>false</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_0pyxw9n">
           <text>"Niewystarczająca średnia"</text>

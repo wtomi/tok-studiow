@@ -8,21 +8,12 @@
 			readonly="true" />
 	</div>
 	<div class="form-group">
-		<label for="punktyECTS">Punkty ECTS</label> 
+		<label for="punktyECTS">Srednia</label> 
 		<input
 			class="form-control" 
-			cam-variable-type="Integer"
-			cam-variable-name="podanie_punktyECTS" 
+			cam-variable-type="Double"
+			cam-variable-name="podanie_srednia" 
 			name="punktyECTS"
-			readonly="true" />
-	</div>
-	<div class="form-group">
-		<label for="uzasadnienie">Uzasadnienie</label> 
-		<input
-			class="form-control" 
-			cam-variable-type="String"
-			cam-variable-name="podanie_uzasadnienie" 
-			name="uzasadnienie"
 			readonly="true" />
 	</div>
 
@@ -45,21 +36,12 @@
 			readonly="true" />
 	</div>
 	<div class="form-group">
-		<label for="oplataStatus">Status płatności</label>
+		<label for="czyOdwolanie">Czy odwolanie?</label>
 		<input
-			class="form-control" 
-			cam-variable-type="String"
-			cam-variable-name="oplata_status" 
-			name="oplataStatus"
-			readonly="true" />
-	</div>	
-	<div class="form-group">
-		<label for="czyOdwolanie">Czy odwołanie?</label>
-		<input
+			type="checkbox"
 			class="form-control" 
 			cam-variable-type="Boolean"
 			cam-variable-name="czyOdwolanie" 
-			name="czyOdwolanie"
-			 />
+			name="czyOdwolanie"/>
 	</div>	
 </form>

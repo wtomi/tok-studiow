@@ -24,15 +24,16 @@ function guid() {
            name="nrAlbumu" />
   </div>
   <div class="form-group">
-    <label for="punktyECTS">Punkty ECTS</label>
+    <label for="srednia">Srednia</label>
     <input class="form-control"
-           cam-variable-type="Duble"
+           cam-variable-type="Double"
            cam-variable-name="podanie_srednia"
-           name="punktyECTS" />
+           name="srednia" />
   </div>
     <div class="form-group">
     <label for="uzasadnienie">Dodatkowe dokumenty</label>
-    <input class="form-control"
+    <input type="checkbox"
+    	   class="form-control"
            cam-variable-type="Boolean"
            cam-variable-name="dodatkowe_dokumenty"
            name="uzasadnienie" />

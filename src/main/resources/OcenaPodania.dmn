@@ -5,14 +5,14 @@
       <biodi:bounds x="200" y="200" width="180" height="80" />
     </extensionElements>
     <decisionTable id="decisionTable">
-      <input id="input1" label="Punkty ECTS" camunda:inputVariable="">
-        <inputExpression id="inputExpression1" typeRef="integer">
-          <text>podanie_punktyECTS</text>
+      <input id="input1" label="Srednia" camunda:inputVariable="srednia">
+        <inputExpression id="inputExpression1" typeRef="double">
+          <text>srednia</text>
         </inputExpression>
       </input>
-      <input id="InputClause_0hknosw" label="Uzasadnienie podania" camunda:inputVariable="">
-        <inputExpression id="LiteralExpression_1pkb3q7" typeRef="integer">
-          <text>${podanie_uzasadnienie.length()}</text>
+      <input id="InputClause_0hknosw" label="Dodatkowe dokumenty" camunda:inputVariable="dodatkowe_dokumenty">
+        <inputExpression id="LiteralExpression_1pkb3q7" typeRef="boolean">
+          <text>dodatkowe_dokumenty</text>
         </inputExpression>
       </input>
       <output id="output1" label="Czy pozytywna?" name="decyzja_czyPozytywna" typeRef="boolean" />
@@ -21,34 +21,34 @@
       <rule id="row-874176976-1">
         <description></description>
         <inputEntry id="UnaryTests_0spkyl0">
-          <text><![CDATA[>= 18]]></text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_14cnetd">
           <text></text>
         </inputEntry>
-        <outputEntry id="LiteralExpression_10ifkov">
+        <inputEntry id="UnaryTests_14cnetd">
           <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_10ifkov">
+          <text>false</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1v4h1c7">
-          <text><![CDATA["Wystarczająco dużo punktów ECTS"]]></text>
+          <text>"Dokumenty muszą być zweryfikowane przez komisję"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_0zr0bqj">
-          <text>true</text>
+          <text>false</text>
         </outputEntry>
       </rule>
       <rule id="row-874176976-2">
         <description></description>
         <inputEntry id="UnaryTests_1bxskym">
-          <text><![CDATA[< 15]]></text>
+          <text>&gt; 4.0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_0ohz2dj">
-          <text></text>
+          <text>false</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1rwwm4q">
-          <text>false</text>
+          <text>true</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1imt9n5">
-          <text><![CDATA["Za mało punktów ECTS"]]></text>
+          <text>"Wystarczająca średnia"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1tu7f6b">
           <text>true</text>
@@ -56,36 +56,19 @@
       </rule>
       <rule id="row-874176976-4">
         <inputEntry id="UnaryTests_0uo4tbt">
-          <text>[15..18[</text>
+          <text>&lt;= 4.0</text>
         </inputEntry>
         <inputEntry id="UnaryTests_07b5v7b">
-          <text><![CDATA[>= 10]]></text>
+          <text>false</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1jm9oa9">
           <text>true</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_0pyxw9n">
-          <text><![CDATA["Mało punktów ECTS ale dobre uzasadnienie"]]></text>
+          <text>"Niewystarczająca średnia"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1jpa8jd">
           <text>true</text>
-        </outputEntry>
-      </rule>
-      <rule id="row-874176976-5">
-        <inputEntry id="UnaryTests_0fhekga">
-          <text>[15..18[</text>
-        </inputEntry>
-        <inputEntry id="UnaryTests_1j59a4t">
-          <text><![CDATA[< 10]]></text>
-        </inputEntry>
-        <outputEntry id="LiteralExpression_1msmcfw">
-          <text>true</text>
-        </outputEntry>
-        <outputEntry id="LiteralExpression_112nzu2">
-          <text><![CDATA["Za słabe uzasadnienie, brak decyzji"]]></text>
-        </outputEntry>
-        <outputEntry id="LiteralExpression_1m9740p">
-          <text>false</text>
         </outputEntry>
       </rule>
     </decisionTable>

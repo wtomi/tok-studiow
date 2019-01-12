@@ -22,6 +22,7 @@
         <bpmn:flowNodeRef>WprowadzenieDanychPlatnosci</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_0tahkdz</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>IntermediateThrowEvent_0ew967k</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_0u8hr77</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_14yagp7" name="Komisja stypendialna">
         <bpmn:flowNodeRef>Task_0qxnimg</bpmn:flowNodeRef>
@@ -44,7 +45,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_0cn7vod" sourceRef="StartEvent_1" targetRef="Task_14en9yj" />
     <bpmn:sequenceFlow id="SequenceFlow_0elwncs" sourceRef="WprowadzenieDanychPlatnosci" targetRef="SubProcess_0746fpn" />
     <bpmn:sequenceFlow id="SequenceFlow_1so9ez2" sourceRef="BoundaryEvent_0xw40hf" targetRef="Task_0qxnimg" />
-    <bpmn:sequenceFlow id="SequenceFlow_124kmze" name="Tak" sourceRef="ExclusiveGateway_0kf9n36" targetRef="Task_1cvrktv">
+    <bpmn:sequenceFlow id="SequenceFlow_124kmze" name="Tak" sourceRef="ExclusiveGateway_0kf9n36" targetRef="ExclusiveGateway_0u8hr77">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${czyOdwolanie}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:subProcess id="SubProcess_0746fpn">
@@ -199,7 +200,7 @@
           <camunda:formField id="odwolanie_uzasadnienie" label="Uzasadnienie" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
-      <bpmn:incoming>SequenceFlow_124kmze</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0di291x</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_16z8efe</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:boundaryEvent id="BoundaryEvent_0k9x4kr" name="Spóźnienie" attachedToRef="Task_1cvrktv">
@@ -230,16 +231,21 @@
     <bpmn:sequenceFlow id="SequenceFlow_0hffau5" sourceRef="BoundaryEvent_0k9x4kr" targetRef="IntermediateThrowEvent_0ew967k" />
     <bpmn:intermediateThrowEvent id="IntermediateThrowEvent_0ew967k">
       <bpmn:incoming>SequenceFlow_0hffau5</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0l8yosa</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="opoznienieMsgId" camunda:class="pl.dziekanat.tokstudiow.OpoznienieRequest" />
     </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0wy5fvy" sourceRef="IntermediateThrowEvent_1g7xcna" targetRef="Task_1epw8cf" />
     <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_1g7xcna">
-      <bpmn:incoming>SequenceFlow_0l8yosa</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1tgvoki</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0wy5fvy</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="wynikOdwolaniaMsgId" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_0wy5fvy" sourceRef="IntermediateThrowEvent_1g7xcna" targetRef="Task_1epw8cf" />
-    <bpmn:sequenceFlow id="SequenceFlow_0l8yosa" sourceRef="IntermediateThrowEvent_0ew967k" targetRef="IntermediateThrowEvent_1g7xcna" />
+    <bpmn:parallelGateway id="ExclusiveGateway_0u8hr77">
+      <bpmn:incoming>SequenceFlow_124kmze</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0di291x</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1tgvoki</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0di291x" sourceRef="ExclusiveGateway_0u8hr77" targetRef="Task_1cvrktv" />
+    <bpmn:sequenceFlow id="SequenceFlow_1tgvoki" sourceRef="ExclusiveGateway_0u8hr77" targetRef="IntermediateThrowEvent_1g7xcna" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0kiuret">
@@ -367,7 +373,7 @@
       <bpmndi:BPMNEdge id="SequenceFlow_124kmze_di" bpmnElement="SequenceFlow_124kmze">
         <di:waypoint x="925" y="145" />
         <di:waypoint x="925" y="224" />
-        <di:waypoint x="1142" y="224" />
+        <di:waypoint x="983" y="224" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="932" y="182" width="17" height="14" />
         </bpmndi:BPMNLabel>
@@ -505,19 +511,25 @@
         <dc:Bounds x="1124" y="300" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_1uok972_di" bpmnElement="IntermediateThrowEvent_1g7xcna">
-        <dc:Bounds x="620" y="556" width="36" height="36" />
+        <dc:Bounds x="630" y="547" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0wy5fvy_di" bpmnElement="SequenceFlow_0wy5fvy">
-        <di:waypoint x="620" y="574" />
-        <di:waypoint x="608" y="574" />
-        <di:waypoint x="608" y="565" />
+        <di:waypoint x="630" y="565" />
         <di:waypoint x="595" y="565" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0l8yosa_di" bpmnElement="SequenceFlow_0l8yosa">
-        <di:waypoint x="1140" y="336" />
-        <di:waypoint x="1106" y="657" />
-        <di:waypoint x="690" y="657" />
-        <di:waypoint x="647" y="589" />
+      <bpmndi:BPMNShape id="ParallelGateway_1okcf9v_di" bpmnElement="ExclusiveGateway_0u8hr77">
+        <dc:Bounds x="983" y="199" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0di291x_di" bpmnElement="SequenceFlow_0di291x">
+        <di:waypoint x="1033" y="224" />
+        <di:waypoint x="1142" y="224" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1tgvoki_di" bpmnElement="SequenceFlow_1tgvoki">
+        <di:waypoint x="1017" y="240" />
+        <di:waypoint x="1099" y="391" />
+        <di:waypoint x="1099" y="668" />
+        <di:waypoint x="648" y="668" />
+        <di:waypoint x="648" y="583" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

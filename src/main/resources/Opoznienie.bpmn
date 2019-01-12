@@ -12,7 +12,7 @@
       <bpmn:messageEventDefinition messageRef="wynikOdwolaniaMsgId" camunda:class="pl.dziekanat.tokstudiow.OpoznienieCallback" />
     </bpmn:endEvent>
     <bpmn:parallelGateway id="ForkGateway">
-      <bpmn:incoming>SequenceFlow_1ktic4c</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_17p1q3h</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_fork_rektor</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_fork_dziekan</bpmn:outgoing>
     </bpmn:parallelGateway>
@@ -36,15 +36,7 @@
       <bpmn:incoming>SequenceFlow_decyzjaRektora_join</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_join_end</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_17p1q3h" sourceRef="StartOdwolanieId" targetRef="IntermediateThrowEvent_1dmozgi" />
-    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_1dmozgi">
-      <bpmn:incoming>SequenceFlow_17p1q3h</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1ktic4c</bpmn:outgoing>
-      <bpmn:timerEventDefinition>
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT3S</bpmn:timeDuration>
-      </bpmn:timerEventDefinition>
-    </bpmn:intermediateCatchEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_1ktic4c" sourceRef="IntermediateThrowEvent_1dmozgi" targetRef="ForkGateway" />
+    <bpmn:sequenceFlow id="SequenceFlow_17p1q3h" sourceRef="StartOdwolanieId" targetRef="ForkGateway" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Opoznienie">
@@ -119,17 +111,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_17p1q3h_di" bpmnElement="SequenceFlow_17p1q3h">
         <di:waypoint x="160" y="120" />
-        <di:waypoint x="176" y="120" />
-        <di:waypoint x="176" y="128" />
-        <di:waypoint x="191" y="128" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="IntermediateCatchEvent_0j27qa0_di" bpmnElement="IntermediateThrowEvent_1dmozgi">
-        <dc:Bounds x="191" y="110" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_1ktic4c_di" bpmnElement="SequenceFlow_1ktic4c">
-        <di:waypoint x="227" y="128" />
-        <di:waypoint x="242" y="128" />
-        <di:waypoint x="242" y="120" />
         <di:waypoint x="257" y="120" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

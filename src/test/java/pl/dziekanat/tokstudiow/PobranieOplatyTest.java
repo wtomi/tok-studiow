@@ -24,25 +24,25 @@ import org.junit.Test;
 @RequiredHistoryLevel(ProcessEngineConfiguration.HISTORY_AUDIT)
 public class PobranieOplatyTest {
 
-	  @Rule
-	  public ProcessEngineRule processEngineRule = new ProcessEngineRule();
-
-	  @Test
-	  @Deployment(resources = {"PobranieOplaty.bpmn"})
-	  public void testPobranieOplaty() {
-	    RuntimeService runtimeService = processEngineRule.getRuntimeService();
-	    HistoryService historyService = processEngineRule.getHistoryService();
-	    VariableMap variablesIn = Variables.createVariables()
-	  	      .putValue("oplata_kwota", 100);
-	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("PobranieOplaty", variablesIn);
-	    
-	    assertThat(processInstance).isEnded();
-	    
-	     List<HistoricVariableInstance> oplata_nrTransakcjiList = historyService.createHistoricVariableInstanceQuery().variableName("oplata_nrTransakcji").list();
-	     HistoricVariableInstance oplata_nrTransakcji = oplata_nrTransakcjiList.get(oplata_nrTransakcjiList.size()-1);
-	     assertEquals("ABC321", oplata_nrTransakcji.getValue());
-	    
-	  }
+//	  @Rule
+//	  public ProcessEngineRule processEngineRule = new ProcessEngineRule();
+//
+//	  @Test
+//	  @Deployment(resources = {"PobranieOplaty.bpmn"})
+//	  public void testPobranieOplaty() {
+//	    RuntimeService runtimeService = processEngineRule.getRuntimeService();
+//	    HistoryService historyService = processEngineRule.getHistoryService();
+//	    VariableMap variablesIn = Variables.createVariables()
+//	  	      .putValue("oplata_kwota", 100);
+//	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("PobranieOplaty", variablesIn);
+//	    
+//	    assertThat(processInstance).isEnded();
+//	    
+//	     List<HistoricVariableInstance> oplata_nrTransakcjiList = historyService.createHistoricVariableInstanceQuery().variableName("oplata_nrTransakcji").list();
+//	     HistoricVariableInstance oplata_nrTransakcji = oplata_nrTransakcjiList.get(oplata_nrTransakcjiList.size()-1);
+//	     assertEquals("ABC321", oplata_nrTransakcji.getValue());
+//	    
+//	  }
 
 
 //	  @Test

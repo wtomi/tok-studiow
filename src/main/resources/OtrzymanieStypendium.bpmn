@@ -19,9 +19,9 @@
         <bpmn:flowNodeRef>OdbiorDecyzji</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_1cvrktv</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>BoundaryEvent_0k9x4kr</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_03fk063</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>WprowadzenieDanychPlatnosci</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_0tahkdz</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>IntermediateThrowEvent_0ew967k</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_14yagp7" name="Komisja stypendialna">
         <bpmn:flowNodeRef>Task_0qxnimg</bpmn:flowNodeRef>
@@ -30,6 +30,7 @@
         <bpmn:flowNodeRef>DecyzjaKomisjiOdwolanie</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_1epw8cf</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>DecyzjaKomisji</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>IntermediateThrowEvent_1g7xcna</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="StartEvent_1" camunda:formKey="embedded:app:forms/ZlozeniePodania.html" camunda:initiator="inicjator">
@@ -157,6 +158,7 @@
     </bpmn:userTask>
     <bpmn:scriptTask id="Task_1epw8cf" name="Odwolnie false" camunda:resultVariable="czyOdwolanie">
       <bpmn:incoming>SequenceFlow_1rp6r49</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0wy5fvy</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_19wixjq</bpmn:outgoing>
       <bpmn:script>${false}</bpmn:script>
     </bpmn:scriptTask>
@@ -189,7 +191,6 @@
     <bpmn:userTask id="OdbiorDecyzji" name="Odbiór decyzji" camunda:formKey="embedded:app:forms/OdebranieDecyzjiPozytywnej.html" camunda:assignee="${inicjator}">
       <bpmn:incoming>SequenceFlow_0bth9mt</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_19wixjq</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_0cye4hm</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0w3rml5</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Task_1cvrktv" name="Złożenie odwałoania" camunda:assignee="${inicjator}">
@@ -202,18 +203,11 @@
       <bpmn:outgoing>SequenceFlow_16z8efe</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:boundaryEvent id="BoundaryEvent_0k9x4kr" name="Spóźnienie" attachedToRef="Task_1cvrktv">
-      <bpmn:outgoing>SequenceFlow_1561x3j</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0hffau5</bpmn:outgoing>
       <bpmn:timerEventDefinition>
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10S</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5S</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_1561x3j" sourceRef="BoundaryEvent_0k9x4kr" targetRef="Task_03fk063" />
-    <bpmn:scriptTask id="Task_03fk063" name="Uzasadnienie" camunda:resultVariable="decyzja_uzasadnienie">
-      <bpmn:incoming>SequenceFlow_1561x3j</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0cye4hm</bpmn:outgoing>
-      <bpmn:script>${"Opóźnienie ze zlozeniem odwołania"}</bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="SequenceFlow_0cye4hm" sourceRef="Task_03fk063" targetRef="OdbiorDecyzji" />
     <bpmn:userTask id="WprowadzenieDanychPlatnosci" name="Wprowadzenie danych do przelewu" camunda:assignee="${inicjator}">
       <bpmn:extensionElements>
         <camunda:formData>
@@ -233,6 +227,19 @@
     <bpmn:sequenceFlow id="SequenceFlow_0udncc8" name="Nie" sourceRef="ExclusiveGateway_0tahkdz" targetRef="EndEvent_1bfnotx">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!decyzja_czyPozytywna}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0hffau5" sourceRef="BoundaryEvent_0k9x4kr" targetRef="IntermediateThrowEvent_0ew967k" />
+    <bpmn:intermediateThrowEvent id="IntermediateThrowEvent_0ew967k">
+      <bpmn:incoming>SequenceFlow_0hffau5</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0l8yosa</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="opoznienieMsgId" camunda:class="pl.dziekanat.tokstudiow.OpoznienieRequest" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_1g7xcna">
+      <bpmn:incoming>SequenceFlow_0l8yosa</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0wy5fvy</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="wynikOdwolaniaMsgId" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0wy5fvy" sourceRef="IntermediateThrowEvent_1g7xcna" targetRef="Task_1epw8cf" />
+    <bpmn:sequenceFlow id="SequenceFlow_0l8yosa" sourceRef="IntermediateThrowEvent_0ew967k" targetRef="IntermediateThrowEvent_1g7xcna" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0kiuret">
@@ -295,8 +302,10 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1r8aaid_di" bpmnElement="SequenceFlow_1r8aaid">
-        <di:waypoint x="879" y="576" />
-        <di:waypoint x="916" y="576" />
+        <di:waypoint x="829" y="616" />
+        <di:waypoint x="829" y="633" />
+        <di:waypoint x="966" y="633" />
+        <di:waypoint x="966" y="616" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="859.5" y="545.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
@@ -467,20 +476,6 @@
         <di:waypoint x="545" y="240" />
         <di:waypoint x="606" y="240" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_1561x3j_di" bpmnElement="SequenceFlow_1561x3j">
-        <di:waypoint x="1124" y="264" />
-        <di:waypoint x="1099" y="264" />
-        <di:waypoint x="1099" y="283" />
-        <di:waypoint x="1074" y="283" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="ScriptTask_1ucu0ps_di" bpmnElement="Task_03fk063">
-        <dc:Bounds x="974" y="243" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0cye4hm_di" bpmnElement="SequenceFlow_0cye4hm">
-        <di:waypoint x="974" y="283" />
-        <di:waypoint x="656" y="283" />
-        <di:waypoint x="656" y="264" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_0tahkdz_di" bpmnElement="ExclusiveGateway_0tahkdz" isMarkerVisible="true">
         <dc:Bounds x="727" y="199" width="50" height="50" />
         <bpmndi:BPMNLabel>
@@ -501,6 +496,28 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="759" y="165" width="17" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0hffau5_di" bpmnElement="SequenceFlow_0hffau5">
+        <di:waypoint x="1142" y="282" />
+        <di:waypoint x="1142" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_0g6ny7z_di" bpmnElement="IntermediateThrowEvent_0ew967k">
+        <dc:Bounds x="1124" y="300" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_1uok972_di" bpmnElement="IntermediateThrowEvent_1g7xcna">
+        <dc:Bounds x="620" y="556" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0wy5fvy_di" bpmnElement="SequenceFlow_0wy5fvy">
+        <di:waypoint x="620" y="574" />
+        <di:waypoint x="608" y="574" />
+        <di:waypoint x="608" y="565" />
+        <di:waypoint x="595" y="565" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0l8yosa_di" bpmnElement="SequenceFlow_0l8yosa">
+        <di:waypoint x="1140" y="336" />
+        <di:waypoint x="1106" y="657" />
+        <di:waypoint x="690" y="657" />
+        <di:waypoint x="647" y="589" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
